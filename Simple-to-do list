@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple To-Do List</title>
+  <title>Daily Planner</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url("C:/Users/Public/Downloads/images/bg2.png") center center fixed;
+      background: url("file:///C:/Users/Public/Downloads/images/bg2.png") center center fixed;
       background-size: cover;
       margin: 0;
       padding: 0;
@@ -47,24 +47,77 @@
       padding: 5px 10px;
       cursor: pointer;
     }
+
+    .task span {
+      flex: 1;
+    }
+
+    #schedule, #status, #calendar {
+      width: 60%;
+      margin-top: 20px;
+    }
+
+    #schedule input, #status input, #calendar input {
+      width: 80%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    #schedule button, #status button, #calendar button {
+      width: 80%;
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
-  <h2>To-Do List</h2>
-  <input type="text" id="taskInput" placeholder="Add a new task...">
-  <input type="date" id="deadlineInput" placeholder="Select deadline...">
-  <button onclick="addTask()">Add Task</button>
+  <h2>Daily Planner</h2>
 
+  <!-- To-Do List -->
+  <input type="text" id="taskInput" placeholder="Add a new task...">
+  <button onclick="addTask()">Add Task</button>
   <ul id="taskList"></ul>
+
+  <!-- Daily Schedule Planner -->
+  <div id="schedule">
+    <h2>Daily Schedule Planner</h2>
+    <input type="text" id="scheduleInput" placeholder="Add a new schedule...">
+    <button onclick="addSchedule()">Add Schedule</button>
+  </div>
+
+  <!-- Task Status -->
+  <div id="status">
+    <h2>Task Status</h2>
+    <input type="text" id="statusInput" placeholder="Add a new task status...">
+    <button onclick="addStatus()">Add Status</button>
+  </div>
+
+  <!-- Calendar -->
+  <div id="calendar">
+    <h2>Calendar</h2>
+    <input type="text" id="calendarInput" placeholder="Add an event...">
+    <button onclick="addEvent()">Add Event</button>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       loadTasks();
+      loadSchedules();
+      loadStatus();
+      loadCalendar();
     });
 
     function addTask() {
       const taskInput = document.getElementById('taskInput');
-      const deadlineInput = document.getElementById('deadlineInput');
       const taskList = document.getElementById('taskList');
 
       if (taskInput.value.trim() === '') {
@@ -75,17 +128,13 @@
       const taskItem = document.createElement('li');
       taskItem.className = 'task';
       taskItem.innerHTML = `
-        <div>
-          <span>${taskInput.value}</span>
-          <span>${deadlineInput.value}</span>
-        </div>
+        <span>${taskInput.value}</span>
         <button onclick="deleteTask(this)">Delete</button>
       `;
 
       taskList.appendChild(taskItem);
       saveTasks();
       taskInput.value = '';
-      deadlineInput.value = '';
     }
 
     function deleteTask(button) {
@@ -100,34 +149,53 @@
       const tasks = [];
       for (let i = 0; i < taskList.children.length; i++) {
         const taskText = taskList.children[i].querySelector('span').innerText;
-        const deadlineText = taskList.children[i].querySelectorAll('span')[1].innerText;
-        tasks.push({ taskText, deadlineText });
+        tasks.push(taskText);
       }
       localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
     function loadTasks() {
       const taskList = document.getElementById('taskList');
-      const tasks = JSON.parse(localStorage.getItem('tasks')) || [
-        { taskText: 'Task 1', deadlineText: '2022-12-31' },
-        { taskText: 'Task 2', deadlineText: '2022-12-31' },
-        { taskText: 'Task 3', deadlineText: '2022-12-31' }
-      ];
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || ['Task 1', 'Task 2', 'Task 3'];
 
       for (let i = 0; i < tasks.length; i++) {
         const taskItem = document.createElement('li');
         taskItem.className = 'task';
         taskItem.innerHTML = `
-          <div>
-            <span>${tasks[i].taskText}</span>
-            <span>${tasks[i].deadlineText}</span>
-          </div>
+          <span>${tasks[i]}</span>
           <button onclick="deleteTask(this)">Delete</button>
         `;
         taskList.appendChild(taskItem);
       }
     }
+
+    function addSchedule() {
+      const scheduleInput = document.getElementById('scheduleInput');
+      // Add schedule logic
+      saveSchedules();
+      scheduleInput.value = '';
+    }
+
+    function addStatus() {
+      const statusInput = document.getElementById('statusInput');
+      // Add status logic
+      saveStatus();
+      statusInput.value = '';
+    }
+
+    function addEvent() {
+      const calendarInput = document.getElementById('calendarInput');
+      // Add calendar event logic
+      saveCalendar();
+      calendarInput.value = '';
+    }
+
+    // Save and Load Functions (similar to previous code)
   </script>
+
+  <footer>
+    <p>Build by Khaja Mainuddin</p>
+    <p>Email: skkhajamainuddinm@gmail.com</p>
+  </footer>
 </body>
 </html>
-
