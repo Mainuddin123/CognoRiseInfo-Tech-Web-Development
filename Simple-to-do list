@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("C:/Users/Public/Downloads/images/bg2.png") center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #taskInput {
+      width: 60%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    #taskList {
+      list-style: none;
+      padding: 0;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #ddd;
+      padding: 8px;
+      margin-bottom: 5px;
+      background-color: white;
+      width: 60%;
+    }
+
+    .task button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>To-Do List</h2>
+  <input type="text" id="taskInput" placeholder="Add a new task...">
+  <button onclick="addTask()">Add Task</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      loadTasks();
+    });
+
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const taskList = document.getElementById('taskList');
+
+      if (taskInput.value.trim() === '') {
+        alert('Please enter a task.');
+        return;
+      }
+
+      const taskItem = document.createElement('li');
+      taskItem.className = 'task';
+      taskItem.innerHTML = `
+        <span>${taskInput.value}</span>
+        <button onclick="deleteTask(this)">Delete</button>
+      `;
+
+      taskList.appendChild(taskItem);
+      saveTasks();
+      taskInput.value = '';
+    }
+
+    function deleteTask(button) {
+      const taskList = document.getElementById('taskList');
+      const taskItem = button.parentNode;
+      taskList.removeChild(taskItem);
+      saveTasks();
+    }
+
+    function saveTasks() {
+      const taskList = document.getElementById('taskList');
+      const tasks = [];
+      for (let i = 0; i < taskList.children.length; i++) {
+        const taskText = taskList.children[i].querySelector('span').innerText;
+        tasks.push(taskText);
+      }
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function loadTasks() {
+      const taskList = document.getElementById('taskList');
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || ['Task 1', 'Task 2', 'Task 3'];
+
+      for (let i = 0; i < tasks.length; i++) {
+        const taskItem = document.createElement('li');
+        taskItem.className = 'task';
+        taskItem.innerHTML = `
+          <span>${tasks[i]}</span>
+          <button onclick="deleteTask(this)">Delete</button>
+        `;
+        taskList.appendChild(taskItem);
+      }
+    }
+  </script>
+</body>
+</html>
