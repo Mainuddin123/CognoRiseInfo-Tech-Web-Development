@@ -52,6 +52,7 @@
 <body>
   <h2>To-Do List</h2>
   <input type="text" id="taskInput" placeholder="Add a new task...">
+  <input type="date" id="deadlineInput" placeholder="Select deadline...">
   <button onclick="addTask()">Add Task</button>
 
   <ul id="taskList"></ul>
@@ -63,6 +64,7 @@
 
     function addTask() {
       const taskInput = document.getElementById('taskInput');
+      const deadlineInput = document.getElementById('deadlineInput');
       const taskList = document.getElementById('taskList');
 
       if (taskInput.value.trim() === '') {
@@ -73,13 +75,17 @@
       const taskItem = document.createElement('li');
       taskItem.className = 'task';
       taskItem.innerHTML = `
-        <span>${taskInput.value}</span>
+        <div>
+          <span>${taskInput.value}</span>
+          <span>${deadlineInput.value}</span>
+        </div>
         <button onclick="deleteTask(this)">Delete</button>
       `;
 
       taskList.appendChild(taskItem);
       saveTasks();
       taskInput.value = '';
+      deadlineInput.value = '';
     }
 
     function deleteTask(button) {
@@ -94,20 +100,28 @@
       const tasks = [];
       for (let i = 0; i < taskList.children.length; i++) {
         const taskText = taskList.children[i].querySelector('span').innerText;
-        tasks.push(taskText);
+        const deadlineText = taskList.children[i].querySelectorAll('span')[1].innerText;
+        tasks.push({ taskText, deadlineText });
       }
       localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
     function loadTasks() {
       const taskList = document.getElementById('taskList');
-      const tasks = JSON.parse(localStorage.getItem('tasks')) || ['Task 1', 'Task 2', 'Task 3'];
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [
+        { taskText: 'Task 1', deadlineText: '2022-12-31' },
+        { taskText: 'Task 2', deadlineText: '2022-12-31' },
+        { taskText: 'Task 3', deadlineText: '2022-12-31' }
+      ];
 
       for (let i = 0; i < tasks.length; i++) {
         const taskItem = document.createElement('li');
         taskItem.className = 'task';
         taskItem.innerHTML = `
-          <span>${tasks[i]}</span>
+          <div>
+            <span>${tasks[i].taskText}</span>
+            <span>${tasks[i].deadlineText}</span>
+          </div>
           <button onclick="deleteTask(this)">Delete</button>
         `;
         taskList.appendChild(taskItem);
@@ -116,3 +130,4 @@
   </script>
 </body>
 </html>
+
