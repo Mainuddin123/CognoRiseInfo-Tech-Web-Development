@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: url('C:/Users/Public/Downloads/images/blue-calculator.png') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #calculator {
+            width: 400px;
+            height: 600px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #main-heading {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        #result-box {
+            width: calc(100% - 20px);
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 10px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        #screen {
+            width: calc(100% - 20px);
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 10px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        #buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            grid-gap: 10px;
+        }
+
+        .button {
+            width: 100%;
+            height: 100%;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .button:hover {
+            background-color: #ddd;
+        }
+
+        .result-box {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 10px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <div id="main-heading">My Calculator</div>
+        <div class="result-box" id="result-box"></div>
+        <div id="screen"></div>
+        <div id="buttons" onclick="handleClick(event)">
+            <div class="button">7</div>
+            <div class="button">8</div>
+            <div class="button">9</div>
+            <div class="button">/</div>
+            <div class="button">sin</div>
+            <div class="button">4</div>
+            <div class="button">5</div>
+            <div class="button">6</div>
+            <div class="button">*</div>
+            <div class="button">cos</div>
+            <div class="button">1</div>
+            <div class="button">2</div>
+            <div class="button">3</div>
+            <div class="button">-</div>
+            <div class="button">tan</div>
+            <div class="button">0</div>
+            <div class="button">C</div>
+            <div class="button">+</div>
+            <div class="button">log</div>
+            <div class="button">.</div>
+            <div class="button">sqrt</div>
+            <div class="button">^</div>
+            <div class="button">%</div>
+            <div class="button">(</div>
+            <div class="button">)</div>
+            <div class="button">cot</div>
+            <div class="button">cosec</div>
+            <div class="button">sec</div>
+            <div class="button">delete</div>
+            <div class="button">=</div>
+        </div>
+    </div>
+    <script>
+        // Your JavaScript code goes here
+        let screen = document.getElementById('screen');
+        let resultBox = document.getElementById('result-box');
+
+        function handleClick(event) {
+            if (event.target.classList.contains('button')) {
+                handleButtonClick(event.target.innerText);
+            }
+        }
+
+        function handleButtonClick(value) {
+            if (value === 'C') {
+                screen.innerText = '';
+                resultBox.innerText = '';
+            } else if (value === '=') {
+                try {
+                    resultBox.innerText = screen.innerText;
+                    screen.innerText = eval(screen.innerText);
+                } catch (error) {
+                    screen.innerText = 'Error';
+                }
+            } else if (value === 'delete') {
+                screen.innerText = screen.innerText.slice(0, -1);
+            } else {
+                screen.innerText += value;
+            }
+        }
+    </script>
+</body>
+</html>
