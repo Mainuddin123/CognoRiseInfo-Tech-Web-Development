@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('file:///C:/Users/Public/Downloads/images/rupeebg.png'); 
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #logo {
+            width: 100px; /* Set the desired width */
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img id="logo" src="file:///C:/Users/Public/Downloads/images/currency.png" alt="Currency Logo">
+        <h2>Currency Converter</h2>
+        <label for="fromCurrency">From:</label>
+        <select id="fromCurrency"></select>
+
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" placeholder="Enter amount">
+
+        <label for="toCurrency">To:</label>
+        <select id="toCurrency"></select>
+
+        <button onclick="convertCurrency()">Convert</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Fetch available currencies from the API
+        fetch('https://open.er-api.com/v6/latest')
+            .then(response => response.json())
+            .then(data => {
+                const currencies = Object.keys(data.rates);
+
+                // Populate the select options with currencies
+                const fromCurrencySelect = document.getElementById('fromCurrency');
+                const toCurrencySelect = document.getElementById('toCurrency');
+
+                currencies.forEach(currency => {
+                    const option = document.createElement('option');
+                    option.value = currency;
+                    option.textContent = currency;
+                    fromCurrencySelect.appendChild(option.cloneNode(true));
+                    toCurrencySelect.appendChild(option);
+                });
+            });
+
+        function convertCurrency() {
+            const fromCurrency = document.getElementById("fromCurrency").value;
+            const toCurrency = document.getElementById("toCurrency").value;
+            const amount = parseFloat(document.getElementById("amount").value);
+
+            // Fetch real-time exchange rates
+            fetch(`https://open.er-api.com/v6/latest/${fromCurrency}`)
+                .then(response => response.json())
+                .then(data => {
+                    const exchangeRate = data.rates[toCurrency];
+                    const convertedAmount = amount * exchangeRate;
+
+                    document.getElementById("result").innerHTML = `${amount} ${fromCurrency} is equal to ${convertedAmount.toFixed(2)} ${toCurrency}`;
+                })
+                .catch(error => console.error('Error fetching exchange rates:', error));
+        }
+    </script>
+</body>
+
+</html>
