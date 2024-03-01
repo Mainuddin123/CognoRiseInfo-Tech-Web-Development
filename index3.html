@@ -3,15 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Booking App</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Travel Booking App</title>
+    <style>
+        /* Basic styling, adjust as needed */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('file:///C:/Users/Public/Downloads/images/bg3.png'); /* Replace with your image path */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #ffffff; /* Set text color to white for better visibility on the background */
+        }
+
+        header, main, footer {
+            padding: 20px;
+        }
+
+        header {
+            background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent black background */
+            color: white;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent black background */
+            color: white;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Add more styles for enhanced UI */
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            margin-bottom: 8px;
+        }
+
+        input, button {
+            margin-bottom: 16px;
+            padding: 8px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Additional styles for responsive design */
+        @media (max-width: 600px) {
+            form {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Your webpage content goes here -->
+    <!-- Header Section -->
     <header>
-        <h1>Your Booking App</h1>
+        <h1>Travel Booking App</h1>
     </header>
+
+    <!-- Main Content Section -->
     <main>
+        <!-- Search and Reserve Section -->
         <section>
             <h2>Search and Reserve</h2>
             <form id="searchForm">
@@ -29,6 +102,7 @@
             </form>
         </section>
 
+        <!-- User Registration Section -->
         <section>
             <h2>User Registration</h2>
             <form id="registrationForm">
@@ -46,75 +120,10 @@
             </form>
         </section>
     </main>
+
+    <!-- Footer Section -->
     <footer>
-        <p>&copy; 2024 Your Booking App</p>
+        <p>&copy; 2024 Travel Booking App</p>
     </footer>
 </body>
 </html>
-
-
-/* Basic styling, adjust as needed */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-header, main, footer {
-    padding: 20px;
-}
-
-header {
-    background-color: #333;
-    color: white;
-    text-align: center;
-}
-
-main {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-section {
-    margin-bottom: 20px;
-}
-
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-/* Add more styles for enhanced UI */
-form {
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-label {
-    margin-bottom: 8px;
-}
-
-input, button {
-    margin-bottom: 16px;
-    padding: 8px;
-}
-
-button {
-    background-color: #333;
-    color: white;
-    cursor: pointer;
-}
-
-/* Additional styles for responsive design */
-@media (max-width: 600px) {
-    form {
-        max-width: 100%;
-    }
-}
