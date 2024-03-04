@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-image: url("C:/Users/Public/Downloads/images/quizsign.png"); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        #quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #question-container {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        #next-button,
+        #previous-button,
+        #submit-button,
+        #check-answers-button {
+            display: none;
+        }
+
+        #correct-answers-container,
+        #mistakes-container {
+            margin-top: 10px;
+            color: #4CAF50; /* Green color for correct answers */
+        }
+
+        .selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #next-button {
+            float: right;
+            margin-right: 10px;
+        }
+
+        #previous-button {
+            float: left;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <h1>Online Quiz App</h1>
+
+        <button id="start-button" onclick="startQuiz()">Start Quiz</button>
+
+        <div id="question-container"></div>
+
+        <div class="options" id="options-container"></div>
+
+        <button id="previous-button" onclick="previousQuestion()">Previous Question</button>
+        <button id="next-button" onclick="nextQuestion()">Next Question</button>
+        <button id="submit-button" onclick="submitQuiz()" style="margin-right: 10px;">Submit</button>
+        <button id="check-answers-button" onclick="checkAnswers()" style="margin-right: 10px;">Check Answers</button>
+
+        <div id="result"></div>
+        <div id="correct-answers-container"></div>
+        <div id="mistakes-container"></div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let quizData;
+        let selectedOption;
+        let correctAnswersContainer;
+        let mistakesContainer;
+
+        async function fetchQuestions() {
+            const response = await fetch("https://opentdb.com/api.php?amount=30&category=17&type=multiple");
+            const data = await response.json();
+            return data.results;
+        }
+
+        function startQuiz() {
+            document.getElementById("start-button").style.display = "none";
+            quizData = fetchQuestions().then((data) => {
+                quizData = data;
+                loadQuestion();
+                document.getElementById("next-button").style.display = "block";
+            });
+            correctAnswersContainer = document.getElementById('correct-answers-container');
+            mistakesContainer = document.getElementById('mistakes-container');
+            correctAnswersContainer.innerHTML = '';
+            mistakesContainer.innerHTML = '';
+        }
+
+        function loadQuestion() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            const questionContainer = document.getElementById('question-container');
+            const optionsContainer = document.getElementById('options-container');
+
+            questionContainer.innerHTML = currentQuestion.question;
+
+            optionsContainer.innerHTML = "";
+            const allOptions = currentQuestion.incorrect_answers.concat(currentQuestion.correct_answer);
+            const shuffledOptions = shuffleArray(allOptions);
+
+            shuffledOptions.forEach((option) => {
+                const button = document.createElement('button');
+                button.innerHTML = option;
+                button.onclick = () => selectOption(button);
+                optionsContainer.appendChild(button);
+            });
+
+            document.getElementById("previous-button").style.display = "block";
+
+            if (currentQuestionIndex === 0) {
+                document.getElementById("previous-button").style.display = "none";
+            }
+        }
+
+        function selectOption(button) {
+            const options = document.querySelectorAll('.options button');
+            options.forEach((option) => {
+                option.classList.remove('selected');
+            });
+
+            button.classList.add('selected');
+            selectedOption = button.innerHTML;
+
+            // Call checkAnswer function to update the score
+            checkAnswer(selectedOption, quizData[currentQuestionIndex].correct_answer);
+        }
+
+        function checkAnswer(userAnswer, correctAnswer) {
+            if (userAnswer === correctAnswer) {
+                score++;
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < 30) {
+                loadQuestion();
+                selectedOption = null;
+                const options = document.querySelectorAll('.options button');
+                options.forEach((option) => {
+                    option.classList.remove('selected');
+                });
+            } else {
+                document.getElementById("next-button").style.display = "none";
+                document.getElementById("previous-button").style.display = "none";
+                document.getElementById("submit-button").style.display = "block";
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            document.getElementById("submit-button").style.display = "none";
+            document.getElementById("check-answers-button").style.display = "block";
+            showResult();
+        }
+
+        function showResult() {
+            const resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = `Your score: ${score} / 30`;
+        }
+
+        function checkAnswers() {
+            document.getElementById("check-answers-button").style.display = "none";
+
+            correctAnswersContainer.innerHTML = 'Correct Answers: ';
+            mistakesContainer.innerHTML = 'Your Mistakes: ';
+
+            const correctAnswers = quizData.map((question) => question.correct_answer);
+            const selectedAnswers = quizData.map((question, index) => {
+                const options = document.querySelectorAll('.options button');
+                const selectedOption = Array.from(options).find((option) => option.classList.contains('selected'));
+                return selectedOption ? selectedOption.innerHTML : null;
+            });
+
+            quizData.forEach((question, index) => {
+                const questionNumber = index + 1;
+                const selectedAnswer = selectedAnswers[index];
+                const correctAnswer = correctAnswers[index];
+
+                const questionHtml = `<br>${questionNumber}. ${question.question}`;
+                const selectedAnswerHtml = selectedAnswer ? `Your Answer: ${selectedAnswer}` : 'Your Answer: Not Selected';
+                const correctAnswerHtml = `Correct Answer: ${correctAnswer}`;
+
+                if (selectedAnswer === correctAnswer) {
+                    correctAnswersContainer.innerHTML += `${questionHtml}<br>${selectedAnswerHtml}<br>${correctAnswerHtml}<br>`;
+                } else {
+                    mistakesContainer.innerHTML += `${questionHtml}<br>${selectedAnswerHtml}<br>${correctAnswerHtml}<br>`;
+                }
+            });
+        }
+
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+    </script>
+
+</body>
+</html>
