@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-image: url('C:/Users/Public/Downloads/images/timebg.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        #countdown {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Countdown Timer</h1>
+
+    <div>
+        <label for="countdownDate">Countdown Target:</label>
+        <input type="datetime-local" id="countdownDate">
+    </div>
+
+    <div class="button-container">
+        <button onclick="startCountdown()">Start Countdown</button>
+        <button onclick="toggleCountdown()">Stop/Resume Countdown</button>
+    </div>
+
+    <div id="countdown"></div>
+
+    <script>
+        let countdownInterval;
+        let targetDate;
+        let countdownRunning = false;
+
+        function startCountdown() {
+            // Clear any existing intervals
+            clearInterval(countdownInterval);
+
+            // Get the target date and time from the input field
+            targetDate = new Date(document.getElementById('countdownDate').value);
+
+            // Check if a valid end date is selected
+            if (isNaN(targetDate.getTime())) {
+                alert('Please set a valid end date.');
+                return;
+            }
+
+            // Update the countdown every second
+            countdownInterval = setInterval(updateCountdown, 1000);
+            countdownRunning = true;
+        }
+
+        function toggleCountdown() {
+            if (countdownRunning) {
+                stopCountdown();
+            } else {
+                startCountdown();
+            }
+        }
+
+        function stopCountdown() {
+            // Clear the interval to stop the countdown
+            clearInterval(countdownInterval);
+            document.getElementById('countdown').innerHTML = 'Countdown stopped!';
+            countdownRunning = false;
+        }
+
+        function updateCountdown() {
+            // Get the current date and time
+            const currentDate = new Date();
+
+            // Calculate the remaining time
+            const timeRemaining = targetDate - currentDate;
+
+            // Check if the countdown has reached zero
+            if (timeRemaining <= 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('countdown').innerHTML = 'Countdown expired!';
+                countdownRunning = false;
+            } else {
+                // Convert milliseconds to seconds, minutes, and hours
+                const seconds = Math.floor((timeRemaining / 1000) % 60);
+                const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
+                const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
+
+                // Display the remaining time
+                document.getElementById('countdown').innerHTML = `Time Remaining: ${hours}h ${minutes}m ${seconds}s`;
+
+                // Output the clock data as a reusable object
+                const clockData = {
+                    hours: hours,
+                    minutes: minutes,
+                    seconds: seconds
+                };
+
+                // Display the clock data in the console for demonstration
+                console.log(clockData);
+            }
+        }
+    </script>
+
+</body>
+</html>
